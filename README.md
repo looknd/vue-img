@@ -83,6 +83,8 @@ VueImg 基于七牛 CDN API 开发，除了常用的图片剪裁之外，你可�
 
 ## 贡献代码
 
+请参考[《饿了么开源项目贡献指南》](https://github.com/ElemeFE/vue-img/blob/master/.github/CONTRIBUTING_zh-cn.md)。
+
 ```bash
 # 构建文件
 npm run build
