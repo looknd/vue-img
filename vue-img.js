@@ -13,7 +13,7 @@ img.src = 'data:image/webp;base64,UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSA
 
 // Default cdn prefix
 var protocol = location.protocol === 'https:' ? 'https://' : 'http://';
-var env = document.domain.match(/.(alpha|beta).elenet.me$/);
+var env = document.domain.match(/.(alpha|beta).ele(net)?.me$/);
 var cdn = protocol + (env ? ("fuss" + (env[0])) : 'fuss10.elemecdn.com');
 
 // Translate hash to path
@@ -62,30 +62,14 @@ var install = function (Vue, opt) {
   if ( opt === void 0 ) opt = {};
 
 
-  // Get src wrapper
-  var getImageSrc = function (ref) {
-    var hash = ref.hash;
-    var width = ref.width;
-    var height = ref.height;
-    var suffix = ref.suffix;
-
-    return getSrc({
-    hash: hash,
-    width: width,
-    height: height,
-    suffix: suffix,
-    prefix: opt.prefix,
-    quality: opt.quality
-  });
-  };
-
   // Set loading image
   var bind = function (el, binding, vnode) {
     var params = binding.value;
-    var src = getImageSrc({
+    var src = getSrc({
       hash: params.loading || opt.loading,
       width: params.width,
-      height: params.height
+      height: params.height,
+      prefix: opt.prefix
     });
 
     setAttr(el, src, vnode.tag);
@@ -96,19 +80,23 @@ var install = function (Vue, opt) {
     var params = binding.value;
     if (!params.hash || binding.oldValue && binding.oldValue.hash === params.hash) { return }
 
+    params.prefix = opt.prefix;
+    params.quality = params.quality || opt.quality;
+
+    var src = getSrc(params);
     var img = new Image();
-    var src = getImageSrc(params);
-    var err = params.error || opt.error;
 
     img.onload = function () {
       setAttr(el, src, vnode.tag);
     };
 
+    var err = params.error || opt.error;
     if (typeof err === 'string' && err.length) {
-      var errSrc = getImageSrc({
+      var errSrc = getSrc({
         hash: err,
         width: params.width,
-        height: params.height
+        height: params.height,
+        prefix: opt.prefix
       });
 
       img.onerror = function () {

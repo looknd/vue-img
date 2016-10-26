@@ -2,7 +2,7 @@ import { canWebp } from './webp'
 
 // Default cdn prefix
 const protocol = location.protocol === 'https:' ? 'https://' : 'http://'
-const env = document.domain.match(/.(alpha|beta).elenet.me$/)
+const env = document.domain.match(/.(alpha|beta).ele(net)?.me$/)
 const cdn = protocol + (env ? `fuss${env[0]}` : 'fuss10.elemecdn.com')
 
 // Translate hash to path
