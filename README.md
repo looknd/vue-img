@@ -42,7 +42,6 @@ VueImg.getSrc({ ... }) // [Function] 获取图片地址
 
 ### 参数列表
 
-
 名称 | 描述 | 全局配置 | 指令参数 | getSrc 函数
 --- | --- | --- | --- | ---
 hash | [String] 图片哈希（必填）| 不支持 | 支持 | 支持
@@ -60,9 +59,9 @@ error | [String] 失败替换图片哈希 | 支持 | 支持 | 不支持
 ## 贡献代码
 
 ```bash
-npm install  # install dependencies
-npm run dev  # build vue-img.js
-npm run test # [WIP]
+npm install  # 安装依赖
+npm run dev  # 构建文件
+npm run test # 单元测试 [WIP]
 ```
 
 ## 开源协议
