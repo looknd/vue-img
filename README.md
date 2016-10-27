@@ -48,8 +48,8 @@ hash | [String] 图片哈希（必填）| 不支持 | 支持 | 支持
 width | [Number] 宽度 | 不支持 | 支持 | 支持
 height | [Number] 高度 | 不支持 | 支持 | 支持
 quality | [Number] 图片质量 | 支持 | 支持 [?] | 支持
-prefix | [String] CDN 前缀 | 支持 | 不支持 | 支持
-suffix | [String] 七牛处理后缀 [?] | 不支持 | 支持 | 支持
+prefix | [String] CDN 地址前缀 | 支持 | 不支持 | 支持
+suffix | [String] CDN 处理后缀 [?] | 不支持 | 支持 | 支持
 loading | [String] 加载中默认图片哈希 | 支持 | 支持 | 不支持
 error | [String] 失败替换图片哈希 | 支持 | 支持 | 不支持
 
