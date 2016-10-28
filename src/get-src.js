@@ -4,7 +4,7 @@ import { canWebp } from './check-webp.js';
 const protocol = location.protocol === 'https:' ? 'https://' : 'http://';
 const cdn = protocol + pathname;
 
-// image hash to patch
+// image hash to path
 const hashToPath = hash => hash.replace(/^(\w)(\w\w)(\w{29}(\w*))$/, '/$1/$2/$3.$4');
 
 // image size
