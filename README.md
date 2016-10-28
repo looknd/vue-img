@@ -1,6 +1,6 @@
 # vue-img
 
-vue-img 是饿了么业务中常用的插件，可将 hash 值转为对应的图片地址。  
+> hash2path wrapper for vue 1.x
 
 ## 使用方法
 
