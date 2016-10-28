@@ -6,21 +6,31 @@
 </head>
 <body>
   <div id="app">
-    <img v-img="{ hash: hash, width: 40, height: 40 }">
+    <img v-img="config">
   </div>
 
-  <script src="http://github.elemecdn.com/vuejs/vue/v2.0.2/dist/vue.js"></script>
+  <script src="http://github.elemecdn.com/vuejs/vue/v2.0.3/dist/vue.js"></script>
   <script src="../vue-img.js"></script>
   <script>
-  Vue.use(VueImg)
+  Vue.use(VueImg, {
+    loading: '7b73ae0bcb1e68afacbaff7d4b25780bjpeg'
+  })
   new Vue({
     el: '#app',
     data: {
-      hash: '50f940dbce46148638e03d0778a4c5f8jpeg'
+      config: {
+        loading: '',
+        hash: 'xxxx',
+        quality: 80
+      }
     },
     // created() {
     //   setTimeout(() => {
-    //     this.hash = '50f940dbce46148638e03d0778a4c5f8jpeg'
+    //     this.config.hash = '50f940dbce46148638e03d0778a4c5f8jpeg'
+    //
+    //     setTimeout(() => {
+    //       this.config.hash = '1fa68b8d589078c3d44e3ae3d7dac9fejpeg'
+    //     }, 3000)
     //   }, 3000)
     // }
   })

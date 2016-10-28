@@ -21,7 +21,7 @@ const getSize = (width, height) => {
 
 // Get image size
 const getSrc = ({ hash, width, height, prefix, suffix, quality } = {}) => {
-  const isValid = typeof hash === 'string' && hash.length
+  const isValid = typeof hash === 'string' && hash.length > 32
   if (!isValid) return ''
 
   const _prefix = typeof prefix === 'string' ? prefix : cdn

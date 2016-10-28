@@ -1,6 +1,6 @@
 # vue-img
 
-> [WIP] hash2path wrapper for vue 2
+> hash2path wrapper for vue 2
 
 ## 使用方法
 
@@ -47,7 +47,7 @@ VueImg.getSrc({ ... }) // [Function] 获取图片地址
 hash | [String] 图片哈希（必填）| 不支持 | 支持 | 支持
 width | [Number] 宽度 | 不支持 | 支持 | 支持
 height | [Number] 高度 | 不支持 | 支持 | 支持
-quality | [Number] 图片质量 | 支持 | 支持 [?] | 支持
+quality | [Number] 图片质量 [?] | 支持 | 支持 | 支持
 prefix | [String] CDN 地址前缀 | 支持 | 不支持 | 支持
 suffix | [String] CDN 处理后缀 [?] | 不支持 | 支持 | 支持
 loading | [String] 加载中默认图片哈希 | 支持 | 支持 | 不支持
@@ -61,8 +61,11 @@ error | [String] 失败替换图片哈希 | 支持 | 支持 | 不支持
 ```bash
 npm install  # 安装依赖
 npm run dev  # 构建文件
-npm run test # 单元测试 [WIP]
+npm run test # 单元测试
 ```
+
+- 提交代码前请确保已通过测试。
+- 更多细节请参考[《饿了么开源项目贡献指南》](https://github.com/ElemeFE/vue-img/blob/master/.github/CONTRIBUTING_zh-cn.md)。
 
 ## 开源协议
 

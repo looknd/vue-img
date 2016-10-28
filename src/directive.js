@@ -5,41 +5,41 @@ const setAttr = (el, src, tag) => {
   tag === 'img' ? el.src = src : el.style.backgroundImage = `url('${src}')`
 }
 
+// If value is an object, `binding.oldValue === binding.value`
+const checkAttr = (el, src, tag) => {
+  const re = /^url\(['"]?(.*?)['"]?\)$/
+  const oldSrc = tag === 'img' ? el.src : el.style.backgroundImage.match(re)[1]
+  return src === oldSrc
+}
+
 // Vue plugin installer
 const install = (Vue, opt = {}) => {
 
-  // Set loading image
-  const bind = (el, binding, vnode) => {
+  const updateCallback = (el, binding, vnode) => {
     const params = binding.value
+    if (!params.hash || typeof params.hash !== 'string') return
+
+    const quality = params.hasOwnProperty('quality') ? params.quality : opt.quality
     const src = getSrc({
-      hash: params.loading || opt.loading,
+      hash: params.hash,
       width: params.width,
       height: params.height,
-      prefix: opt.prefix
+      prefix: opt.prefix,
+      suffix: params.suffix,
+      quality
     })
+    if (checkAttr(el, src, vnode.tag)) return
 
-    setAttr(el, src, vnode.tag)
-  }
-
-  // Hash change callback
-  const update = (el, binding, vnode) => {
-    const params = binding.value
-    if (!params.hash || binding.oldValue && binding.oldValue.hash === params.hash) return
-
-    params.prefix = opt.prefix
-    params.quality = params.quality || opt.quality
-
-    const src = getSrc(params)
     const img = new Image()
 
     img.onload = () => {
       setAttr(el, src, vnode.tag)
     }
 
-    const err = params.error || opt.error
-    if (typeof err === 'string' && err.length) {
+    const error = params.hasOwnProperty('error') ? params.error : opt.error
+    if (error && typeof error === 'string') {
       const errSrc = getSrc({
-        hash: err,
+        hash: error,
         width: params.width,
         height: params.height,
         prefix: opt.prefix
@@ -56,11 +56,21 @@ const install = (Vue, opt = {}) => {
   // Register Vue directive
   Vue.directive('img', {
     bind(el, binding, vnode) {
-      bind(el, binding, vnode)
-      update(el, binding, vnode)
+      const params = binding.value
+      const loading = params.hasOwnProperty('loading') ? params.loading : opt.loading
+      const src = getSrc({
+        hash: loading,
+        width: params.width,
+        height: params.height,
+        prefix: opt.prefix
+      })
+
+      if (src) setAttr(el, src, vnode.tag)
+
+      updateCallback(el, binding, vnode)
     },
 
-    update
+    update: updateCallback
   })
 
 }

@@ -3,9 +3,9 @@ module.exports = config => {
     basePath: '../',
     browsers: ['Chrome'],
     files: [
-      'http://github.elemecdn.com/vuejs/vue/v2.0.2/dist/vue.js',
+      'http://github.elemecdn.com/vuejs/vue/v2.0.3/dist/vue.js',
       'vue-img.js',
-      'build/test.js'
+      'build/test/*.test.js'
     ],
     frameworks: ['mocha', 'chai'],
     reporters: ['mocha'],

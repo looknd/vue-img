@@ -40,7 +40,7 @@ var getSrc = function (ref) {
   var suffix = ref.suffix;
   var quality = ref.quality;
 
-  var isValid = typeof hash === 'string' && hash.length;
+  var isValid = typeof hash === 'string' && hash.length > 32;
   if (!isValid) { return '' }
 
   var _prefix = typeof prefix === 'string' ? prefix : cdn;
@@ -57,43 +57,43 @@ var setAttr = function (el, src, tag) {
   tag === 'img' ? el.src = src : el.style.backgroundImage = "url('" + src + "')";
 };
 
+// If value is an object, `binding.oldValue === binding.value`
+var checkAttr = function (el, src, tag) {
+  var re = /^url\(['"]?(.*?)['"]?\)$/;
+  var oldSrc = tag === 'img' ? el.src : el.style.backgroundImage.match(re)[1];
+  return src === oldSrc
+};
+
 // Vue plugin installer
 var install = function (Vue, opt) {
   if ( opt === void 0 ) opt = {};
 
 
-  // Set loading image
-  var bind = function (el, binding, vnode) {
+  var updateCallback = function (el, binding, vnode) {
     var params = binding.value;
+    if (!params.hash || typeof params.hash !== 'string') { return }
+
+    var quality = params.hasOwnProperty('quality') ? params.quality : opt.quality;
     var src = getSrc({
-      hash: params.loading || opt.loading,
+      hash: params.hash,
       width: params.width,
       height: params.height,
-      prefix: opt.prefix
+      prefix: opt.prefix,
+      suffix: params.suffix,
+      quality: quality
     });
+    if (checkAttr(el, src, vnode.tag)) { return }
 
-    setAttr(el, src, vnode.tag);
-  };
-
-  // Hash change callback
-  var update = function (el, binding, vnode) {
-    var params = binding.value;
-    if (!params.hash || binding.oldValue && binding.oldValue.hash === params.hash) { return }
-
-    params.prefix = opt.prefix;
-    params.quality = params.quality || opt.quality;
-
-    var src = getSrc(params);
     var img = new Image();
 
     img.onload = function () {
       setAttr(el, src, vnode.tag);
     };
 
-    var err = params.error || opt.error;
-    if (typeof err === 'string' && err.length) {
+    var error = params.hasOwnProperty('error') ? params.error : opt.error;
+    if (error && typeof error === 'string') {
       var errSrc = getSrc({
-        hash: err,
+        hash: error,
         width: params.width,
         height: params.height,
         prefix: opt.prefix
@@ -109,12 +109,22 @@ var install = function (Vue, opt) {
 
   // Register Vue directive
   Vue.directive('img', {
-    bind: function bind$1(el, binding, vnode) {
-      bind(el, binding, vnode);
-      update(el, binding, vnode);
+    bind: function bind(el, binding, vnode) {
+      var params = binding.value;
+      var loading = params.hasOwnProperty('loading') ? params.loading : opt.loading;
+      var src = getSrc({
+        hash: loading,
+        width: params.width,
+        height: params.height,
+        prefix: opt.prefix
+      });
+
+      if (src) { setAttr(el, src, vnode.tag); }
+
+      updateCallback(el, binding, vnode);
     },
 
-    update: update
+    update: updateCallback
   });
 
 };
