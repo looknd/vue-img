@@ -8,7 +8,7 @@ describe('检测核心函数 getSrc', () => {
       .to.equal('')
     expect(VueImg.getSrc({ hash: 12450 }))
       .to.equal('')
-    expect(VueImg.getSrc({ hash: 'xxxxxxxxxx' }))
+    expect(VueImg.getSrc({ hash: null }))
       .to.equal('')
   })
 

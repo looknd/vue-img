@@ -1,5 +1,5 @@
-import { canWebp } from './webp'
-import getSrc from './src'
+import { canWebp } from './validator'
+import getSrc from './core'
 import install from './directive'
 
 export { canWebp, getSrc, install }

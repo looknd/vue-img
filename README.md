@@ -21,13 +21,19 @@ Vue.use(VueImg, {
 
 ### 使用指令
 
+#### 基本用法
+
 > 由于 Vue 2 删除了指令中的 params，故采用 object value 的形式传入参数
 
 ```HTML
-<!-- 设置图片 -->
+<!-- 设置图片 + 默认参数 -->
+<img v-img="'xxx'">
+<!-- 设置图片 + 自定义参数 -->
 <img v-img="{ hash: 'xxx', width: 233, height: 666 }">
 
-<!-- 设置背景 -->
+<!-- 设置背景 + 默认参数 -->
+<div v-img="'xxx'"></div>
+<!-- 设置背景 + 自定义参数 -->
 <div v-img="{ hash: 'xxx', width: 12, height: 450 }"></div>
 ```
 

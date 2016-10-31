@@ -130,4 +130,20 @@ describe('检测指令', function() {
       expect(divImg).to.equal(src)
     })
   })
+
+  describe('hash', () => {
+    before(done => {
+      vm.config = hash
+      setTimeout(done, 2000)
+    })
+
+    it('测试通过', () => {
+      const imgSrc = document.querySelector('#app img').src
+      const divImg = document.querySelector('#app div').style.backgroundImage.match(re)[1]
+      const src = VueImg.getSrc({ hash })
+
+      expect(imgSrc).to.equal(src)
+      expect(divImg).to.equal(src)
+    })
+  })
 })

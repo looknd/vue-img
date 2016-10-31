@@ -6,7 +6,6 @@
 
 // Check webP support
 exports.canWebp = false;
-
 var img = new Image();
 img.onload = function () { exports.canWebp = true; };
 img.src = 'data:image/webp;base64,UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAsAAAABBxAREYiI/gcAAABWUDggGAAAADABAJ0BKgEAAQABABwlpAADcAD+/gbQAA==';
@@ -40,8 +39,7 @@ var getSrc = function (ref) {
   var suffix = ref.suffix;
   var quality = ref.quality;
 
-  var isValid = typeof hash === 'string' && hash.length > 32;
-  if (!isValid) { return '' }
+  if (!hash || typeof hash !== 'string') { return '' }
 
   var _prefix = typeof prefix === 'string' ? prefix : cdn;
   var _suffix = typeof suffix === 'string' ? suffix : '';
@@ -71,16 +69,16 @@ var install = function (Vue, opt) {
 
   var updateCallback = function (el, binding, vnode) {
     var params = binding.value;
-    if (!params.hash || typeof params.hash !== 'string') { return }
+    var hash = Object.prototype.toString.call(params).slice(8, -1) === 'Object' ? params.hash : params;
+    if (!hash || typeof hash !== 'string') { return }
 
-    var quality = params.hasOwnProperty('quality') ? params.quality : opt.quality;
     var src = getSrc({
-      hash: params.hash,
+      hash: hash,
       width: params.width,
       height: params.height,
       prefix: opt.prefix,
       suffix: params.suffix,
-      quality: quality
+      quality: params.hasOwnProperty('quality') ? params.quality : opt.quality
     });
     if (checkAttr(el, src, vnode.tag)) { return }
 

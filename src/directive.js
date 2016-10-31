@@ -1,4 +1,4 @@
-import getSrc from './src'
+import getSrc from './core'
 
 // Set img.src or element.style.backgroundImage
 const setAttr = (el, src, tag) => {
@@ -17,16 +17,16 @@ const install = (Vue, opt = {}) => {
 
   const updateCallback = (el, binding, vnode) => {
     const params = binding.value
-    if (!params.hash || typeof params.hash !== 'string') return
+    const hash = Object.prototype.toString.call(params).slice(8, -1) === 'Object' ? params.hash : params
+    if (!hash || typeof hash !== 'string') return
 
-    const quality = params.hasOwnProperty('quality') ? params.quality : opt.quality
     const src = getSrc({
-      hash: params.hash,
+      hash,
       width: params.width,
       height: params.height,
       prefix: opt.prefix,
       suffix: params.suffix,
-      quality
+      quality: params.hasOwnProperty('quality') ? params.quality : opt.quality
     })
     if (checkAttr(el, src, vnode.tag)) return
 

@@ -1,9 +1,4 @@
-import { canWebp } from './webp'
-
-// Default cdn prefix
-const protocol = location.protocol === 'https:' ? 'https://' : 'http://'
-const env = document.domain.match(/.(alpha|beta).ele(net)?.me$/)
-const cdn = protocol + (env ? `fuss${env[0]}` : 'fuss10.elemecdn.com')
+import { canWebp, cdn } from './validator'
 
 // Translate hash to path
 const hashToPath = hash => hash.replace(/^(\w)(\w\w)(\w{29}(\w*))$/, '/$1/$2/$3.$4')
@@ -21,8 +16,7 @@ const getSize = (width, height) => {
 
 // Get image size
 const getSrc = ({ hash, width, height, prefix, suffix, quality } = {}) => {
-  const isValid = typeof hash === 'string' && hash.length > 32
-  if (!isValid) return ''
+  if (!hash || typeof hash !== 'string') return ''
 
   const _prefix = typeof prefix === 'string' ? prefix : cdn
   const _suffix = typeof suffix === 'string' ? suffix : ''
