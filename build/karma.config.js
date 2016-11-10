@@ -4,7 +4,7 @@ module.exports = config => {
     browsers: ['Chrome'],
     files: [
       'http://github.elemecdn.com/vuejs/vue/v2.0.3/dist/vue.js',
-      'vue-img.js',
+      'dist/vue-img.js',
       'build/test/*.test.js'
     ],
     frameworks: ['mocha', 'chai'],

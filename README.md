@@ -39,9 +39,10 @@ Vue.use(VueImg, {
 
 ### 可读属性
 
-VueImg 提供了一些属性，可用于指令以外的场合。你应当视它们为只读属性，避免直接修改。
+VueImg 提供了一些属性，可用于指令以外的场合。你应当视它们为**只读**属性，避免直接修改。
 
 ```JS
+VueImg.cdn             // [String]   当前环境的默认 CDN
 VueImg.canWebp         // [Boolean]  当前环境是否支持 webP
 VueImg.getSrc({ ... }) // [Function] 获取图片地址
 ```
