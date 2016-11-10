@@ -1,5 +1,8 @@
-import { canWebp } from './validator'
+import VueImg from './base'
 import getSrc from './core'
 import install from './directive'
 
-export { canWebp, getSrc, install }
+VueImg.getSrc = getSrc
+VueImg.install = install
+
+export default VueImg

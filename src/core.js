@@ -1,4 +1,4 @@
-import { canWebp, cdn } from './validator'
+import VueImg from './base'
 
 // Translate hash to path
 const hashToPath = hash => hash.replace(/^(\w)(\w\w)(\w{29}(\w*))$/, '/$1/$2/$3.$4')
@@ -18,10 +18,10 @@ const getSize = (width, height) => {
 const getSrc = ({ hash, width, height, prefix, suffix, quality } = {}) => {
   if (!hash || typeof hash !== 'string') return ''
 
-  const _prefix = typeof prefix === 'string' ? prefix : cdn
+  const _prefix = typeof prefix === 'string' ? prefix : VueImg.cdn
   const _suffix = typeof suffix === 'string' ? suffix : ''
   const _quality = typeof quality === 'number' ? `quality/${quality}/` : ''
-  const _format = canWebp ? 'format/webp/' : ''
+  const _format = VueImg.canWebp ? 'format/webp/' : ''
   const params = `${_quality}${_format}${getSize(width, height)}${_suffix}`
 
   return _prefix + hashToPath(hash) + (params ? `?imageMogr/${params}` : '')

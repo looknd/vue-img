@@ -1,19 +1,21 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (factory((global.VueImg = global.VueImg || {})));
-}(this, (function (exports) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.VueImg = factory());
+}(this, (function () { 'use strict';
+
+var VueImg$1 = Object.create(null);
 
 // Check webP support
-exports.canWebp = false;
+VueImg$1.canWebp = false;
 var img = new Image();
-img.onload = function () { exports.canWebp = true; };
+img.onload = function () { VueImg$1.canWebp = true; };
 img.src = 'data:image/webp;base64,UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAsAAAABBxAREYiI/gcAAABWUDggGAAAADABAJ0BKgEAAQABABwlpAADcAD+/gbQAA==';
 
 // Default cdn prefix
 var protocol = location.protocol === 'https:' ? 'https://' : 'http://';
 var env = document.domain.match(/.(alpha|beta).ele(net)?.me$/);
-var cdn = protocol + (env ? ("fuss" + (env[0])) : 'fuss10.elemecdn.com');
+VueImg$1.cdn = protocol + (env ? ("fuss" + (env[0])) : 'fuss10.elemecdn.com');
 
 // Translate hash to path
 var hashToPath = function (hash) { return hash.replace(/^(\w)(\w\w)(\w{29}(\w*))$/, '/$1/$2/$3.$4'); };
@@ -41,10 +43,10 @@ var getSrc = function (ref) {
 
   if (!hash || typeof hash !== 'string') { return '' }
 
-  var _prefix = typeof prefix === 'string' ? prefix : cdn;
+  var _prefix = typeof prefix === 'string' ? prefix : VueImg$1.cdn;
   var _suffix = typeof suffix === 'string' ? suffix : '';
   var _quality = typeof quality === 'number' ? ("quality/" + quality + "/") : '';
-  var _format = exports.canWebp ? 'format/webp/' : '';
+  var _format = VueImg$1.canWebp ? 'format/webp/' : '';
   var params = "" + _quality + _format + (getSize(width, height)) + _suffix;
 
   return _prefix + hashToPath(hash) + (params ? ("?imageMogr/" + params) : '')
@@ -127,9 +129,9 @@ var install = function (Vue, opt) {
 
 };
 
-exports.getSrc = getSrc;
-exports.install = install;
+VueImg$1.getSrc = getSrc;
+VueImg$1.install = install;
 
-Object.defineProperty(exports, '__esModule', { value: true });
+return VueImg$1;
 
 })));

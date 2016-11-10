@@ -1,10 +1,10 @@
 {
   "name": "vue-img",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "hash2path wrapper for vue 2",
   "main": "vue-img.js",
   "scripts": {
-    "dev": "rollup --config build/rollup.config.js",
+    "dev": "rollup --config build/rollup.config.js --es5 && rollup --config build/rollup.config.js --es6",
     "test": "karma start build/karma.config.js"
   },
   "repository": {
