@@ -95,8 +95,8 @@ const install = (Vue, opt = {}) => {
   // Register Vue directive
   Vue.directive('img', {
     bind(el, binding, vnode) {
-      const params = binding.value;
-      const loading = params && params.hasOwnProperty('loading') ? params.loading : opt.loading;
+      const params = binding.value || {};
+      const loading = params.hasOwnProperty('loading') ? params.loading : opt.loading;
       const src = getSrc({
         hash: loading,
         width: params.width,
