@@ -58,7 +58,7 @@ const install = (Vue, opt = {}) => {
   Vue.directive('img', {
     bind(el, binding, vnode) {
       const params = binding.value
-      const loading = params.hasOwnProperty('loading') ? params.loading : opt.loading
+      const loading = params && params.hasOwnProperty('loading') ? params.loading : opt.loading
       const src = getSrc({
         hash: loading,
         width: params.width,
