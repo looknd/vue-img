@@ -7,9 +7,10 @@ const setAttr = (el, src, tag) => {
 
 // If value is an object, `binding.oldValue === binding.value`
 const checkAttr = (el, src, tag) => {
+  if (tag === 'img') return el.src === src
   const re = /^url\(['"]?(.*?)['"]?\)$/
-  const oldSrc = tag === 'img' ? el.src : el.style.backgroundImage.match(re)[1]
-  return src === oldSrc
+  const result = el.style.backgroundImage.match(re)
+  return result && result[1] === src
 }
 
 // Vue plugin installer
