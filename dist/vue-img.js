@@ -59,9 +59,10 @@ var setAttr = function (el, src, tag) {
 
 // If value is an object, `binding.oldValue === binding.value`
 var checkAttr = function (el, src, tag) {
+  if (tag === 'img') { return el.src === src }
   var re = /^url\(['"]?(.*?)['"]?\)$/;
-  var oldSrc = tag === 'img' ? el.src : el.style.backgroundImage.match(re)[1];
-  return src === oldSrc
+  var result = el.style.backgroundImage.match(re);
+  return result && result[1] === src
 };
 
 // Vue plugin installer
