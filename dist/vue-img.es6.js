@@ -64,23 +64,26 @@ var getImageClass = (opt = {}) => {
         target: this,
         keys: [
           'loading', 'error',
-          'prefix', 'suffix',
           'quality',
+          'prefix', 'suffix',
           'disableWebp',
         ],
       });
     }
 
     hashToSrc(hash) {
-      return getSrc({
-        hash,
-        width: this.width,
-        height: this.height,
-        prefix: this.prefix,
-        suffix: this.suffix,
-        quality: this.quality,
-        disableWebp: this.disableWebp,
-      })
+      const params = { hash };
+
+      copyKeys({
+        source: this,
+        target: params,
+        keys: [
+          'width', 'height', 'quality',
+          'prefix', 'suffix',
+          'disableWebp',
+        ],
+      });
+      return getSrc(params)
     }
   }
 

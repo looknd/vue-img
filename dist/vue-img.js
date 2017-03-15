@@ -84,23 +84,26 @@ var getImageClass = function (opt) {
       target: this,
       keys: [
         'loading', 'error',
-        'prefix', 'suffix',
         'quality',
+        'prefix', 'suffix',
         'disableWebp',
       ],
     });
   };
 
   GlobalOptions.prototype.hashToSrc = function hashToSrc (hash) {
-    return getSrc({
-      hash: hash,
-      width: this.width,
-      height: this.height,
-      prefix: this.prefix,
-      suffix: this.suffix,
-      quality: this.quality,
-      disableWebp: this.disableWebp,
-    })
+    var params = { hash: hash };
+
+    copyKeys({
+      source: this,
+      target: params,
+      keys: [
+        'width', 'height', 'quality',
+        'prefix', 'suffix',
+        'disableWebp',
+      ],
+    });
+    return getSrc(params)
   };
 
   var vImg = (function (GlobalOptions) {
