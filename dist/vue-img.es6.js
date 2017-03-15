@@ -26,92 +26,131 @@ const getSize = (width, height) => {
 };
 
 // Get image size
-const getSrc = ({ hash, width, height, prefix, suffix, quality } = {}) => {
+const getSrc = ({ hash, width, height, prefix, suffix, quality, disableWebp } = {}) => {
   if (!hash || typeof hash !== 'string') return ''
 
   const _prefix = typeof prefix === 'string' ? prefix : VueImg$1.cdn;
   const _suffix = typeof suffix === 'string' ? suffix : '';
   const _quality = typeof quality === 'number' ? `quality/${quality}/` : '';
-  const _format = VueImg$1.canWebp ? 'format/webp/' : '';
+  const _format = !disableWebp && VueImg$1.canWebp ? 'format/webp/' : '';
   const params = `${_quality}${_format}${getSize(width, height)}${_suffix}`;
 
   return _prefix + hashToPath(hash) + (params ? `?imageMogr/${params}` : '')
 };
 
-// Set img.src or element.style.backgroundImage
-const setAttr = (el, src, tag) => {
-  tag === 'img' ? el.src = src : el.style.backgroundImage = `url('${src}')`;
+const hasProp = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop);
+
+const copyKeys = ({ source, target, keys }) => {
+  keys.forEach(key => {
+    if (hasProp(source, key)) {
+      target[key] = source[key];
+    }
+  });
 };
 
-// If value is an object, `binding.oldValue === binding.value`
-const checkAttr = (el, src, tag) => {
-  if (tag === 'img') return el.src === src
-  const re = /^url\(['"]?(.*?)['"]?\)$/;
-  const result = el.style.backgroundImage.match(re);
-  return result && result[1] === src
+const setAttr = (el, src, tag) => {
+  if (tag === 'img') {
+    el.src = src;
+  } else {
+    el.style.backgroundImage = `url('${src}')`;
+  }
+};
+
+var getImageClass = (opt = {}) => {
+  class GlobalOptions {
+    constructor() {
+      copyKeys({
+        source: opt,
+        target: this,
+        keys: [
+          'loading', 'error',
+          'prefix', 'suffix',
+          'quality',
+          'disableWebp',
+        ],
+      });
+    }
+
+    hashToSrc(hash) {
+      return getSrc({
+        hash,
+        width: this.width,
+        height: this.height,
+        prefix: this.prefix,
+        suffix: this.suffix,
+        quality: this.quality,
+        disableWebp: this.disableWebp,
+      })
+    }
+  }
+
+  class vImg extends GlobalOptions {
+    constructor(value) {
+      const params = value && typeof value === 'object'
+        ? value
+        : { hash: value };
+
+      super();
+      copyKeys({
+        source: params,
+        target: this,
+        keys: [
+          'hash', 'loading', 'error',
+          'width', 'height', 'quality',
+          'prefix', 'suffix',
+          'disableWebp',
+        ],
+      });
+    }
+
+    toImageSrc() {
+      return this.hashToSrc(this.hash)
+    }
+
+    toLoadingSrc() {
+      return this.hashToSrc(this.loading)
+    }
+
+    toErrorSrc() {
+      return this.hashToSrc(this.error)
+    }
+  }
+
+  return vImg
 };
 
 // Vue plugin installer
-const install = (Vue, opt = {}) => {
+const install = (Vue, opt) => {
+  const vImg = getImageClass(opt);
 
-  const updateCallback = (el, binding, vnode) => {
-    const params = binding.value;
-    const hash = Object.prototype.toString.call(params).slice(8, -1) === 'Object' ? params.hash : params;
-    if (!hash || typeof hash !== 'string') return
-
-    const src = getSrc({
-      hash,
-      width: params.width,
-      height: params.height,
-      prefix: opt.prefix,
-      suffix: params.suffix,
-      quality: params.hasOwnProperty('quality') ? params.quality : opt.quality
-    });
-    if (checkAttr(el, src, vnode.tag)) return
+  const update = (el, binding, vnode) => {
+    const vImgIns = new vImg(binding.value);
+    const vImgSrc = vImgIns.toImageSrc();
+    const vImgErr = vImgIns.toErrorSrc();
+    if (!vImgSrc) return
 
     const img = new Image();
-
     img.onload = () => {
-      setAttr(el, src, vnode.tag);
+      setAttr(el, vImgSrc, vnode.tag);
     };
-
-    const error = params.hasOwnProperty('error') ? params.error : opt.error;
-    if (error && typeof error === 'string') {
-      const errSrc = getSrc({
-        hash: error,
-        width: params.width,
-        height: params.height,
-        prefix: opt.prefix
-      });
-
+    if (vImgErr) {
       img.onerror = () => {
-        setAttr(el, errSrc, vnode.tag);
+        setAttr(el, vImgErr, vnode.tag);
       };
     }
-
-    img.src = src;
+    img.src = vImgSrc;
   };
 
   // Register Vue directive
   Vue.directive('img', {
     bind(el, binding, vnode) {
-      const params = binding.value || {};
-      const loading = params.hasOwnProperty('loading') ? params.loading : opt.loading;
-      const src = getSrc({
-        hash: loading,
-        width: params.width,
-        height: params.height,
-        prefix: opt.prefix
-      });
-
+      const src = new vImg(binding.value).toLoadingSrc();
       if (src) setAttr(el, src, vnode.tag);
-
-      updateCallback(el, binding, vnode);
+      update(el, binding, vnode);
     },
 
-    update: updateCallback
+    update,
   });
-
 };
 
 VueImg$1.getSrc = getSrc;

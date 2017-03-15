@@ -1,5 +1,5 @@
 import VueImg from './base'
-import getSrc from './core'
+import getSrc from './src'
 import install from './directive'
 
 VueImg.getSrc = getSrc

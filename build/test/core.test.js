@@ -47,4 +47,10 @@ describe('检测核心函数 getSrc', () => {
     expect(VueImg.getSrc(config))
       .to.include('/!100x200r/gravity/Center/crop/100x200/')
   })
+
+  it('{ disableWebp }', () => {
+    config.disableWebp = true
+    expect(VueImg.getSrc(config))
+      .to.not.include('webp')
+  })
 })
