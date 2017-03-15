@@ -1,79 +1,38 @@
-import getSrc from './core'
-
-// Set img.src or element.style.backgroundImage
-const setAttr = (el, src, tag) => {
-  tag === 'img' ? el.src = src : el.style.backgroundImage = `url('${src}')`
-}
-
-// If value is an object, `binding.oldValue === binding.value`
-const checkAttr = (el, src, tag) => {
-  if (tag === 'img') return el.src === src
-  const re = /^url\(['"]?(.*?)['"]?\)$/
-  const result = el.style.backgroundImage.match(re)
-  return result && result[1] === src
-}
+import { setAttr } from './utils'
+import getImageClass from './class'
 
 // Vue plugin installer
-const install = (Vue, opt = {}) => {
+const install = (Vue, opt) => {
+  const vImg = getImageClass(opt)
 
-  const updateCallback = (el, binding, vnode) => {
-    const params = binding.value
-    const hash = Object.prototype.toString.call(params).slice(8, -1) === 'Object' ? params.hash : params
-    if (!hash || typeof hash !== 'string') return
-
-    const src = getSrc({
-      hash,
-      width: params.width,
-      height: params.height,
-      prefix: opt.prefix,
-      suffix: params.suffix,
-      quality: params.hasOwnProperty('quality') ? params.quality : opt.quality
-    })
-    if (checkAttr(el, src, vnode.tag)) return
+  const update = (el, binding, vnode) => {
+    const vImgIns = new vImg(binding.value)
+    const vImgSrc = vImgIns.toImageSrc()
+    const vImgErr = vImgIns.toErrorSrc()
+    if (!vImgSrc) return
 
     const img = new Image()
-
     img.onload = () => {
-      setAttr(el, src, vnode.tag)
+      setAttr(el, vImgSrc, vnode.tag)
     }
-
-    const error = params.hasOwnProperty('error') ? params.error : opt.error
-    if (error && typeof error === 'string') {
-      const errSrc = getSrc({
-        hash: error,
-        width: params.width,
-        height: params.height,
-        prefix: opt.prefix
-      })
-
+    if (vImgErr) {
       img.onerror = () => {
-        setAttr(el, errSrc, vnode.tag)
+        setAttr(el, vImgErr, vnode.tag)
       }
     }
-
-    img.src = src
+    img.src = vImgSrc
   }
 
   // Register Vue directive
   Vue.directive('img', {
     bind(el, binding, vnode) {
-      const params = binding.value || {}
-      const loading = params.hasOwnProperty('loading') ? params.loading : opt.loading
-      const src = getSrc({
-        hash: loading,
-        width: params.width,
-        height: params.height,
-        prefix: opt.prefix
-      })
-
+      const src = new vImg(binding.value).toLoadingSrc()
       if (src) setAttr(el, src, vnode.tag)
-
-      updateCallback(el, binding, vnode)
+      update(el, binding, vnode)
     },
 
-    update: updateCallback
+    update,
   })
-
 }
 
 export default install

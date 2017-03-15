@@ -3,7 +3,7 @@ module.exports = config => {
     basePath: '../',
     browsers: ['Chrome'],
     files: [
-      'http://github.elemecdn.com/vuejs/vue/v2.0.3/dist/vue.js',
+      'http://github.elemecdn.com/vuejs/vue/v2.2.4/dist/vue.js',
       'dist/vue-img.js',
       'build/test/*.test.js'
     ],

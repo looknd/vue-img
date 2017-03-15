@@ -15,13 +15,13 @@ const getSize = (width, height) => {
 }
 
 // Get image size
-const getSrc = ({ hash, width, height, prefix, suffix, quality } = {}) => {
+const getSrc = ({ hash, width, height, prefix, suffix, quality, disableWebp } = {}) => {
   if (!hash || typeof hash !== 'string') return ''
 
   const _prefix = typeof prefix === 'string' ? prefix : VueImg.cdn
   const _suffix = typeof suffix === 'string' ? suffix : ''
   const _quality = typeof quality === 'number' ? `quality/${quality}/` : ''
-  const _format = VueImg.canWebp ? 'format/webp/' : ''
+  const _format = !disableWebp && VueImg.canWebp ? 'format/webp/' : ''
   const params = `${_quality}${_format}${getSize(width, height)}${_suffix}`
 
   return _prefix + hashToPath(hash) + (params ? `?imageMogr/${params}` : '')
